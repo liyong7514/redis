@@ -36,19 +36,29 @@
 #include <sys/types.h>
 #include <stdarg.h>
 
+/**
+ * 定义别名 
+ */
 typedef char *sds;
 
+/**
+ * 定义自己的字符串结构
+ * redis每个字符串的占用空间为 strlen(buf)+8
+ * sizeof(struct sdshdr)=8
+ */
 struct sdshdr {
-    int len;
-    int free;
-    char buf[];
+    int len;//字符串长度
+    int free;//buf剩余长度
+    char buf[];//变长的char[]
 };
 
+/*获得s的长度*/
 static inline size_t sdslen(const sds s) {
     struct sdshdr *sh = (void*)(s-(sizeof(struct sdshdr)));
     return sh->len;
 }
 
+/*查看剩余空间*/
 static inline size_t sdsavail(const sds s) {
     struct sdshdr *sh = (void*)(s-(sizeof(struct sdshdr)));
     return sh->free;
